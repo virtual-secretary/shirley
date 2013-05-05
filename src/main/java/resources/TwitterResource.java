@@ -4,13 +4,16 @@ import java.net.URI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import models.UserSettings;
 import security.UAuth;
 import security.User;
+import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -94,4 +97,29 @@ public class TwitterResource
 		return Response.ok().build();
 	}
 	
+	@GET
+	@Path("profile")
+	@Produces(javax.ws.rs.core.MediaType.APPLICATION_JSON)
+	public Object getProfile(
+			@UAuth User user,
+			@QueryParam("q") String q) throws Exception
+	{
+		UserSettings setting = user.getSetting();
+		if ( !setting.isTwiiter() )
+		{
+			// TODO :: warn client that this user needs to be connect to google or maybe redirect
+		}
+		
+		AccessToken accToken = accDAO.findByUser(user.getId());
+		
+		if ( accToken == null )
+		{
+			// TODO :: warn client that this user needs to be connect to google or maybe redirect
+		}
+		
+		twitter.setOAuthAccessToken(accToken);
+		ResponseList<twitter4j.User> users = twitter.searchUsers(q, 0);
+		
+		return users;
+	}
 }

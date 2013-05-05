@@ -1,14 +1,10 @@
 package resources;
 
 import java.net.URI;
-import java.util.EnumMap;
-import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
@@ -21,23 +17,18 @@ import org.slf4j.LoggerFactory;
 import security.UAuth;
 import security.User;
 
-import com.google.code.linkedinapi.client.LinkedInApiClient;
-import com.google.code.linkedinapi.client.LinkedInApiClientException;
-import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
-import com.google.code.linkedinapi.client.enumeration.SearchParameter;
 import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
-import com.google.code.linkedinapi.schema.People;
 
 import daos.LinkedInRequestTokenDAO;
 import daos.UserDAO;
 
-@Path("/oauth/linkedin")
-public class LinkedInResource
+@Path("/oauth/yammer")
+public class YammerResource
 {
-	private final static Logger LOG = LoggerFactory.getLogger(LinkedInResource.class);
+private final static Logger LOG = LoggerFactory.getLogger(YammerResource.class);
 	
 	private final static String API_KEY = "veffajn4yiim";
 	private final static String SECRET_KEY = "7HnDNngrRzMmiCbF";
@@ -54,23 +45,11 @@ public class LinkedInResource
 		return UriBuilder.fromUri(
 							serverURI.getScheme() + "://" + serverURI.getHost()
 							).path("api").path( 
-							UriBuilder.fromResource(LinkedInResource.class).build().toString()
+							UriBuilder.fromResource(YammerResource.class).build().toString()
 						  )
 						 .build();
 	}
 	
-	public LinkedInResource(URI serverURI, UserDAO userDAO,
-			LinkedInRequestTokenDAO reqDAO, LinkedInAccessTokenDAO accDAO)
-	{
-		super();
-		this.serverURI = serverURI;
-		this.userDAO = userDAO;
-		this.reqDAO = reqDAO;
-		this.accDAO = accDAO;
-	}
-
-
-
 	@GET
 	@Path("auth")
 	public Response auth(@UAuth User user, 
@@ -126,53 +105,4 @@ public class LinkedInResource
 		
 		return Response.ok().build();
 	}
-	
-	@GET
-	@Path("profile")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Object getProfile(
-			@UAuth User user, 
-			@QueryParam("first") String first,
-			@QueryParam("last") String last,
-			@QueryParam("company") String company) throws Exception
-	{
-		UserSettings setting = user.getSetting();
-		if ( !setting.isLinkedin() )
-		{
-			// TODO :: warn client that this user needs to be connect to google or maybe redirect
-		}
-		
-		LinkedInAccessToken accToken = accDAO.getRequestTokenByDeveloper(user.getId());
-		
-		if ( accToken == null )
-		{
-			// TODO :: warn client that this user needs to be connect to google or maybe redirect
-		}
-		
-		final LinkedInApiClientFactory factory = LinkedInApiClientFactory.newInstance("veffajn4yiim", "7HnDNngrRzMmiCbF");
-		LinkedInApiClient client = factory.createLinkedInApiClient(accToken);
-		
-		Map<SearchParameter, String> searchParameters = new EnumMap<SearchParameter, String>(SearchParameter.class);
-		
-		if ( first != null )
-			searchParameters.put(SearchParameter.FIRST_NAME, first);
-		if ( last != null )
-			searchParameters.put(SearchParameter.LAST_NAME, last);
-		if ( company != null )
-			searchParameters.put(SearchParameter.COMPANY_NAME, last);
-		
-		try
-		{
-			People users = client.searchPeople(searchParameters);
-			return users;
-		}
-		catch ( LinkedInApiClientException e )
-		{
-			LOG.error("Exception", e);
-		}
-		
-		return null;
-		
-	}
-
 }
