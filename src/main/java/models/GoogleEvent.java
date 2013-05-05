@@ -34,7 +34,6 @@ public class GoogleEvent
 	@JsonProperty private int sequence;
 	@JsonProperty private List<GoogleEventAttendee> attendees;
 	@JsonProperty private boolean attendeesOmitted;
-	@JsonProperty private List<GoogleEventExtendedProperty> extendedProperties;
 	@JsonProperty private GoogleEventGadget gadget;
 	@JsonProperty private boolean anyoneCanAddSelf;
 	@JsonProperty private boolean guestsCanInviteOthers;
@@ -56,7 +55,6 @@ public class GoogleEvent
 			GoogleEventDateTime originalStartTime, String transparency,
 			String visibility, String iCalUID, int sequence,
 			List<GoogleEventAttendee> attendees, boolean attendeesOmitted,
-			List<GoogleEventExtendedProperty> extendedProperties,
 			GoogleEventGadget gadget, boolean anyoneCanAddSelf,
 			boolean guestsCanInviteOthers, boolean guestsCanSeeOtherGuests,
 			boolean privateCopy, GoogleEventReminders reminders,
@@ -86,7 +84,6 @@ public class GoogleEvent
 		this.sequence = sequence;
 		this.attendees = attendees;
 		this.attendeesOmitted = attendeesOmitted;
-		this.extendedProperties = extendedProperties;
 		this.gadget = gadget;
 		this.anyoneCanAddSelf = anyoneCanAddSelf;
 		this.guestsCanInviteOthers = guestsCanInviteOthers;
@@ -328,17 +325,6 @@ public class GoogleEvent
 		this.attendeesOmitted = attendeesOmitted;
 	}
 
-	public List<GoogleEventExtendedProperty> getExtendedProperties()
-	{
-		return extendedProperties;
-	}
-
-	public void setExtendedProperties(
-			List<GoogleEventExtendedProperty> extendedProperties)
-	{
-		this.extendedProperties = extendedProperties;
-	}
-
 	public GoogleEventGadget getGadget()
 	{
 		return gadget;
@@ -446,10 +432,6 @@ public class GoogleEvent
 		result = prime * result + ((end == null) ? 0 : end.hashCode());
 		result = prime * result + (endTimeUnspecified ? 1231 : 1237);
 		result = prime * result + ((etag == null) ? 0 : etag.hashCode());
-		result = prime
-				* result
-				+ ((extendedProperties == null) ? 0 : extendedProperties
-						.hashCode());
 		result = prime * result + ((gadget == null) ? 0 : gadget.hashCode());
 		result = prime * result + (guestsCanInviteOthers ? 1231 : 1237);
 		result = prime * result + (guestsCanSeeOtherGuests ? 1231 : 1237);
@@ -545,12 +527,6 @@ public class GoogleEvent
 			if (other.etag != null)
 				return false;
 		} else if (!etag.equals(other.etag))
-			return false;
-		if (extendedProperties == null)
-		{
-			if (other.extendedProperties != null)
-				return false;
-		} else if (!extendedProperties.equals(other.extendedProperties))
 			return false;
 		if (gadget == null)
 		{
@@ -665,6 +641,5 @@ public class GoogleEvent
 		} else if (!visibility.equals(other.visibility))
 			return false;
 		return true;
-	}
-	
+	}	
 }

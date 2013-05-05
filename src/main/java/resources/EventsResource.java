@@ -81,11 +81,11 @@ public class EventsResource
 					{
 						events.add(event);
 					}
-				} catch (UniformInterfaceException e)
+				} 
+				catch (UniformInterfaceException e)
 				{
 					LOG.error("e: {}", e.getResponse().getEntity(String.class));
 				}
-
 			}
 		}
 		

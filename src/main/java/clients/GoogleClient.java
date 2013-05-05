@@ -9,8 +9,6 @@ import models.GoogleCalendarList;
 import models.GoogleEvent;
 import models.GoogleEvents;
 
-import com.google.api.services.calendar.model.CalendarList;
-
 public interface GoogleClient
 {
 	void setAccessToken(String token);

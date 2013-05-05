@@ -16,6 +16,7 @@ import models.GoogleUserInfoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.api.client.util.DateTime;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -64,8 +65,8 @@ public class GoogleClientImpl implements GoogleClient
 		WebResource resource = client.resource(
 				"https://www.googleapis.com/calendar/v3/calendars/" + calID
 						+ "/events")
-						.queryParam("access_token", this.accessToken);
-//						.queryParam("timeMin", new DateTime(date).toStringRfc3339());
+						.queryParam("access_token", this.accessToken)
+						.queryParam("timeMin", new DateTime(date).toStringRfc3339());
 		
 		GoogleEvents resp = resource.get(GoogleEvents.class);
 		return resp;

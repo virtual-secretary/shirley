@@ -2,8 +2,14 @@ package models;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class GoogleEventExtendedProperty
 {
 	@JsonProperty("private") private Map<String, String> propertyPrivate;
@@ -11,8 +17,10 @@ public class GoogleEventExtendedProperty
 	
 	public GoogleEventExtendedProperty(){}
 	
-	public GoogleEventExtendedProperty(Map<String, String> propertyPrivate,
-			Map<String, String> shared)
+	@JsonCreator
+	public GoogleEventExtendedProperty(
+			@JsonProperty("private") Map<String, String> propertyPrivate,
+			@JsonProperty("shared") Map<String, String> shared)
 	{
 		super();
 		this.propertyPrivate = propertyPrivate;
