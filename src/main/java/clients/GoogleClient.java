@@ -1,18 +1,26 @@
 package clients;
 
+import java.net.URI;
+import java.util.Set;
+
+import models.GoogleAccessToken;
+import models.GoogleEvent;
+import models.GoogleEvents;
+
 import com.google.api.services.calendar.model.CalendarList;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.Events;
 
 public interface GoogleClient
 {
-
+	Set<String> getEmails(String token);
+	
+	GoogleAccessToken getAccessToken(final String code, final URI redirectUri);
+	
 	CalendarList listCalendars();
 
-	Events listCalEvents(String calID);
+	GoogleEvents listCalEvents(String calID);
 
-	Event updateCalEvent(String calID, Event event);
+	GoogleEvent updateCalEvent(String calID, GoogleEvent event);
 
-	Event getCalEvent(String calID, String eventID);
+	GoogleEvent getCalEvent(String calID, String eventID);
 
 }
