@@ -10,6 +10,10 @@ import javax.ws.rs.core.UriBuilder;
 
 import models.LinkedInAccessTokenDAO;
 import models.UserSettings;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import security.UAuth;
 import security.User;
 
@@ -24,6 +28,8 @@ import daos.UserDAO;
 @Path("/oauth/linkedin")
 public class LinkedInResource
 {
+	private final static Logger LOG = LoggerFactory.getLogger(LinkedInResource.class);
+	
 	private final static String API_KEY = "veffajn4yiim";
 	private final static String SECRET_KEY = "7HnDNngrRzMmiCbF";
 	private final static String USER_TOKEN = "93bc2947-8b36-4ff0-b7a5-f02a24f0c0a0";
@@ -73,6 +79,7 @@ public class LinkedInResource
 		if ( reqToken == null )
 		{
 			reqToken = oauthService.getOAuthRequestToken(redirectURL.toString());
+			LOG.debug("\n\tAuth token not found, requesting {}", reqToken);
 			reqDAO.save(userId, reqToken);
 		}
 		
@@ -85,7 +92,8 @@ public class LinkedInResource
 	@Path("connect")
 	public Response connect(
 			@UAuth User user,
-			@QueryParam("code") String code) throws Exception
+			@QueryParam("oauth_token") String token,
+			@QueryParam("oauth_verifier") String code) throws Exception
 	{
 		final LinkedInOAuthService oauthService = LinkedInOAuthServiceFactory.getInstance().createLinkedInOAuthService(API_KEY, SECRET_KEY);
 		
@@ -95,7 +103,9 @@ public class LinkedInResource
 		{
 			// REQUEST TOKEN
 			requestToken = oauthService.getOAuthRequestToken();
+			LOG.debug("TOKEN requested {} ", requestToken.getToken());
 		}
+		
 		
 		LinkedInAccessToken oAuthAccessToken = oauthService.getOAuthAccessToken(requestToken, code);
 		
