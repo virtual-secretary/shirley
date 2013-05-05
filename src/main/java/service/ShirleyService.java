@@ -5,6 +5,9 @@ import java.net.URI;
 import resources.HelloWorldResource;
 import resources.RootResource;
 import security.LoginCookieGeneratorIpml;
+import security.UAuthAuthenticator;
+import security.User;
+import security.UserAuthProvider;
 import bundle.MongoExceptionsBundle;
 
 import com.mongodb.DB;
@@ -40,6 +43,8 @@ public class ShirleyService extends Service<ShirleyConfiguration>
 		// LoginCookie Generator
 		LoginCookieGeneratorIpml generator = new LoginCookieGeneratorIpml(m, db, serverURI);
 		
+		// Adding Authenticator
+		env.addProvider(new UserAuthProvider<User>(new UAuthAuthenticator(m, db), serverURI.toString()));
 		// Adding Resources
 		env.addResource(new HelloWorldResource());
 		env.addResource(new RootResource(db, generator));
