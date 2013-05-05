@@ -1,6 +1,5 @@
 package clients;
 
-import static com.yammer.dropwizard.testing.JsonHelpers.fromJson;
 
 import java.io.IOException;
 
@@ -27,15 +26,17 @@ public class ImplGoogleClient implements GoogleClient{
 		WebResource resource = client.resource("https://www.googleapis.com/calendar/v3/users/me/calendarList");
 		//CalendarService service new CalendarService();
 		//resource.
-		String resp = resource.get(String.class);
-		CalendarList calList;
-		try {
-			calList = fromJson(resp, CalendarList.class);
-			return calList;
-
-		} catch (IOException e) {
-			return null;
-		}
+//		String resp = resource.get(String.class);
+//		CalendarList calList;
+//		try {
+//			calList = fromJson(resp, CalendarList.class);
+//			return calList;
+//
+//		} catch (IOException e) {
+//			return null;
+//		}
+		CalendarList calList = resource.get(CalendarList.class);
+		return calList;
 
 	}
 
@@ -46,23 +47,18 @@ public class ImplGoogleClient implements GoogleClient{
 		WebResource resource = client
 				.resource("https://www.googleapis.com/calendar/v3/calendars/"
 						+ calID + "/events");
-		String resp = resource.get(String.class);
-		try {
-			Events events = fromJson(resp, Events.class);
-			return events;
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-
-		}
+		Events resp = resource.get(Events.class);
+		return resp;
 	}
 
 	@Override
-	public boolean updateCalEvent(Event event, EventsOptionsModel options) {
+	public Event updateCalEvent(String calID,Event event) {
 		// PUT https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
-		return false;
+		WebResource resource = client
+				.resource("https://www.googleapis.com/calendar/v3/calendars/"
+						+ calID + "/events/"+event.getId());
+		Event resp = resource.put(Event.class, event);
+		return resp;
 	}
 
 	@Override
