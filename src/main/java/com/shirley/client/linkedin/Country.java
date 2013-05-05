@@ -14,6 +14,8 @@ public class Country {
 		this.code = code;
 	}
 
+	public Country(){}
+	
 	public Country(String code) {
 		super();
 		this.code = code;

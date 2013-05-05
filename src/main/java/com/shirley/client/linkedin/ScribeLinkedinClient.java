@@ -1,6 +1,9 @@
 package com.shirley.client.linkedin;
 
 import java.io.IOException;
+import java.net.URI;
+
+import javax.ws.rs.core.UriBuilder;
 
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.builder.api.LinkedInApi;
@@ -11,15 +14,14 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
-public class ScribeLinkedinClient
-{
-	private static final String PROTECTED_RESOURCE_URL = "http://api.linkedin.com/v1/people/~/connections:(id,last-name)?format=json";
+public class ScribeLinkedinClient implements LinkedinClient {
+	private final String PROTECTED_RESOURCE_URL = "http://api.linkedin.com/v1/people/~/people/";
+	private final String JSON_FORMAT ="?format=json";
 	private Response response;
 	private final Client client;
 	
@@ -27,21 +29,12 @@ public class ScribeLinkedinClient
 		super();
 		this.client = client;
 	}
-
-	public Response getResponse() {
-		return response;
-	}
-
-	public void setResponse(Response response) {
-		this.response = response;
-	}
-
-	public static String getProtectedResourceUrl() {
-		return PROTECTED_RESOURCE_URL;
-	}
 	
 	@Override
-	public UserInfo extractUserInfo() {
+	public Person extractPerson(String url) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
 		OAuthService service = new ServiceBuilder()
 		.provider(LinkedInApi.class)
 		.apiKey("veffajn4yiim")
@@ -50,11 +43,23 @@ public class ScribeLinkedinClient
 		
 		//obtain token
 		Token requestToken = service.getRequestToken();
-		Verifier verifier = new Verifier(service.getAuthorizationUrl(requestToken));
+		
+		URI tokenURL = UriBuilder.fromUri(service.getAuthorizationUrl(requestToken)).build();
+		
+		String _token = tokenURL.getQuery().replace("oauth_token=", "");
+		
+		Verifier verifier = new Verifier(_token);
+		
+		System.out.println(requestToken);
+		System.out.println(_token);
+		
 		
 		//trade request key and verifier for access token
 		Token accessToken = service.getAccessToken(requestToken, verifier);
-		OAuthRequest request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL);
+		
+		System.out.println(accessToken);
+		
+		OAuthRequest request = new OAuthRequest(Verb.GET, PROTECTED_RESOURCE_URL+url+JSON_FORMAT);
 		
 		//protect resources
 		service.signRequest(accessToken, request);
@@ -63,7 +68,7 @@ public class ScribeLinkedinClient
 	    LinkedInClientResponse linkedinClientResponse;
 	    try
 	    {
-	    	linkedinClientResponse = mapper.readValue(response.getBody().trim(), LinkedinClientResponse.class);
+	    	linkedinClientResponse = mapper.readValue(response.getBody().trim(), LinkedInClientResponse.class);
 			return linkedinClientResponse.getResultCount() == 1 ? linkedinClientResponse.getResults().get(0) : null;
 		} 
 	    catch (JsonParseException ignore) {}
