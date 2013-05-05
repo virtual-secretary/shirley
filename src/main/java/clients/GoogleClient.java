@@ -14,7 +14,7 @@ public interface GoogleClient {
 
 CalendarList listCalendars();
 
-List listCalEvents(String calID);
+Events listCalEvents(String calID);
 boolean updateCalEvent(Event event ,EventsOptionsModel options);
 Event getCalEvent(String calID,String eventID);
 
