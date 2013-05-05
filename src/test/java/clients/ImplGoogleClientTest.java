@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
 
 public class ImplGoogleClientTest {
@@ -16,7 +17,7 @@ public class ImplGoogleClientTest {
 @Test
 public void test(){
 //client.getCalEvent(calID, eventID)
-Events tes = client.listCalEvents("82bumu40l9tvmsnujq3kpelhp8@group.calendar.google.com");
+Event tes = client.getCalEvent("82bumu40l9tvmsnujq3kpelhp8@group.calendar.google.com","q15rpnkd6c7i8alrsq2uprs2lg");
 try {
 	System.out.println(tes.toPrettyString());
 } catch (IOException e) {

@@ -1,4 +1,10 @@
 package clients;
+import java.io.IOException;
+import java.util.Map;
+
+import org.eclipse.jetty.util.ajax.JSON;
+
+import com.google.api.client.json.GenericJson;
 import com.google.api.services.calendar.model.*;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -57,10 +63,15 @@ public class ImplGoogleClient implements GoogleClient{
 		//GET 
 		//https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
 		WebResource resource = client.resource("https://www.googleapis.com/calendar/v3/calendars/" + calID +"/events/" + eventID).queryParam("key", APIKEY);
-	
-		Event resp = resource.get(Event.class);
-		return resp;		
+		//Event resp = resource.get(Event.class);
+		GenericJson resp = resource.get(Event.class);
+//Event event = new Event();
+//event.getFactory().;
+		
 
+		
+		//return (Event) resp.toString();		
+return null;
 	}
 
 }
