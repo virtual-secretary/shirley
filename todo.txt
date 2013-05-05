@@ -1,0 +1,7 @@
+tts-api.com/ need a client and 
+Firebase - need client <=rex
+twitter - client
+linkedin - client there
+Google calendar - client there
+hotmail calendar - need client
+

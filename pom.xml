@@ -89,6 +89,21 @@
         <version>${dropwizard.version}</version>
         <scope>test</scope>
       </dependency>
+      <dependency>
+      	<groupId>com.google.api-client</groupId>
+      	<artifactId>google-api-client</artifactId>
+      	<version>1.14.1-beta</version>
+      </dependency>
+      <dependency>
+      	<groupId>com.google.apis</groupId>
+      	<artifactId>google-api-services-calendar</artifactId>
+      <version>v3-rev41-1.14.2-beta</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.api-client</groupId>
+      <artifactId>google-api-client-servlet</artifactId>
+      <version>1.14.1-beta</version>
+    </dependency>
   </dependencies>
   
   <!-- ================================ -->
