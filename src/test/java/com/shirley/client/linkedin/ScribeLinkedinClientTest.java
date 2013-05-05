@@ -1,5 +1,9 @@
 package com.shirley.client.linkedin;
 
+import static com.yammer.dropwizard.testing.JsonHelpers.asJson;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,8 +28,11 @@ public class ScribeLinkedinClientTest {
 		//Person expected = fromJson()
 	
 		//Execute
-		Person actual = scribClient.extractPerson("~");
+		List<Person> actual = scribClient.extractPerson("~");
 		//verify
+		
+		System.out.println(asJson(actual));
+		
 	}
 }
 

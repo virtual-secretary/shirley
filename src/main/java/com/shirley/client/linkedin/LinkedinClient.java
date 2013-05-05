@@ -1,5 +1,7 @@
 package com.shirley.client.linkedin;
 
+import java.util.List;
+
 public interface LinkedinClient {
-	Person extractPerson(String url);
+	List<Person> extractPerson(String url);
 }
