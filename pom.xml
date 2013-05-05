@@ -61,7 +61,14 @@
           <artifactId>dropwizard-views</artifactId>
           <version>${dropwizard.version}</version>
       </dependency>
+      <dependency>
+  		<groupId>com.googlecode.linkedin-j</groupId>
+  		<artifactId>linkedin-j-core</artifactId>
+  		<version>1.0.416</version>
+  		<scope>compile</scope>
+	</dependency>
     </dependencies>
+    
   </dependencyManagement>
 
   <!-- ================================ -->
