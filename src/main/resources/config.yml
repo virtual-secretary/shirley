@@ -1,3 +1,11 @@
+#Mongo DB Settings
+mongo:
+  database: appfuel_rex
+  setUpIndex: true
+  nodes:
+    - host: localhost
+      port: 27017
+
 # HTTP-specific options.
 http:
 
