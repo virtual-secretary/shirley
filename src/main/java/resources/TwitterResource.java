@@ -31,12 +31,23 @@ public class TwitterResource
 	{
 		return UriBuilder.fromUri(
 							serverURI.getScheme() + "://" + serverURI.getHost()
-							).path(
-							UriBuilder.fromResource(GoogleOAuthResource.class).build().toString()
+							).path("api").path(
+							UriBuilder.fromResource(TwitterResource.class).build().toString()
 						  )
 						 .build();
 	}
 	
+	public TwitterResource(URI serverURI, Twitter twitter, UserDAO userDAO,
+			TwitterRequestTokenDAO reqDAO, TwitterAccessTokenDAO accDAO)
+	{
+		super();
+		this.serverURI = serverURI;
+		this.twitter = twitter;
+		this.userDAO = userDAO;
+		this.reqDAO = reqDAO;
+		this.accDAO = accDAO;
+	}
+
 	@GET
 	@Path("auth")
 	public Response auth(@UAuth User user, @QueryParam("method") String method)
@@ -45,7 +56,7 @@ public class TwitterResource
 		String userId = user.getId();
 
 		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI())
-				.path("method").build();
+				.path(method).build();
 		RequestToken reqToken = reqDAO.findByUser(userId);
 		
 		if ( reqToken == null )
@@ -54,7 +65,9 @@ public class TwitterResource
 			reqDAO.save(userId, reqToken);
 		}
 		
-		return Response.seeOther(redirectURL).build();
+		URI authURI = UriBuilder.fromUri(reqToken.getAuthenticationURL()).build();
+		
+		return Response.seeOther(authURI).build();
 	}
 	
 	@GET

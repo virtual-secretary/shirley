@@ -11,22 +11,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.DB;
-import com.mongodb.Mongo;
 import com.yammer.dropwizard.util.Duration;
 
 public class LoginCookieGeneratorIpml
 {
-	private Mongo m;
-	private DB db;
 	private final static Logger LOG = LoggerFactory.getLogger(LoginCookieGeneratorIpml.class);
 	private URI serverURI;
-
-	public LoginCookieGeneratorIpml(Mongo m, DB db, URI serverURI)
+	private JacksonDBCollection<LoginToken, String> coll;
+	
+	public LoginCookieGeneratorIpml(DB db, URI serverURI)
 	{
 		super();
-		this.m = m;
-		this.db = db;
 		this.serverURI = serverURI;
+		this.coll = JacksonDBCollection.wrap(db.getCollection("login_tokens"), LoginToken.class, String.class);
 	}
 
 	public String generateResponse(User user, boolean remember, String ip)
@@ -37,7 +34,7 @@ public class LoginCookieGeneratorIpml
 		final String issuedFor = user.getId();
 		final Duration expireIn; 
 		
-		JacksonDBCollection<LoginToken, String> coll = JacksonDBCollection.wrap(db.getCollection("login_tokens"), LoginToken.class, String.class);
+		
 		
 		if ( remember )
 		{
@@ -78,13 +75,14 @@ public class LoginCookieGeneratorIpml
 		}
 	}
 	
-	public String destroyCookie()
+	public String destroyCookie(String getId)
 	{
 		final String serverName = serverURI.getHost();
 		
 		String domain = serverName.equals("localhost") ? "" : serverName;
 		
-		// Save the token
+		// remove the token
+		coll.removeById(getId);
 		
 		final boolean isHttps = "https".equals(serverURI.getScheme()) ? true : false;		// if server is https cookie is only available for https
 		

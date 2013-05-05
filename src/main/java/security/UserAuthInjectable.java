@@ -14,7 +14,7 @@ import com.yammer.dropwizard.auth.Authenticator;
 class UserAuthInjectable<T> extends AbstractHttpContextInjectable<T>
 {
 //	private static final Log LOG = Log.forClass(UserAuthInjectable.class);
-	private static final String TOKEN_HEADER = "VA-SHIRLEY";
+	private static final String TOKEN_HEADER = "VA_SHIRLEY";
 	private static final String HEADER_NAME = "WWW-Authenticate";
     private static final String HEADER_VALUE = "realm=\"%s\"";
 
@@ -67,7 +67,6 @@ class UserAuthInjectable<T> extends AbstractHttpContextInjectable<T>
         	if ( required )
         	{
         		UserAuthProvider.LOG.warn("Error authenticating credentials", e);
-//        		throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         		throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED)
 									                        .header(HEADER_NAME,
 									                                String.format(HEADER_VALUE, realm))

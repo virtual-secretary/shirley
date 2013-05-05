@@ -3,7 +3,6 @@ package security;
 import java.util.Date;
 
 import org.bson.types.ObjectId;
-import org.mongojack.DBCursor;
 import org.mongojack.DBQuery;
 import org.mongojack.DBUpdate;
 import org.mongojack.JacksonDBCollection;
@@ -40,18 +39,16 @@ public class UAuthAuthenticator implements Authenticator<String, User>
 	{
 		// TokenCollection
 		
-		DBCursor<LoginToken> tokenCur = tokenDAO.find(DBQuery.is("_id", new ObjectId(credentials)));
+		LoginToken aToken = tokenDAO.findOneById(credentials);
 		
-		if ( tokenCur.hasNext() )
+		if ( aToken != null )
 		{
-			final LoginToken aToken = tokenCur.next();
 			final String userId = aToken.getIssuedFor();
 			// Check user status
-			DBCursor<User> user = userDAO.find(DBQuery.is("_id", userId));
+			final User aUser = userDAO.findOneById(userId);
 			
-			if ( user.hasNext() )
+			if ( aUser != null )
 			{
-				final User aUser = user.next();
 				if ( aToken.isExpired() || aToken.isRevoked() )
 				{
 					// Token is expired or revoked
@@ -74,9 +71,13 @@ public class UAuthAuthenticator implements Authenticator<String, User>
 						DBUpdate.set("expireAt", aToken.getExpireAt()));
 				
 				// return the user
-				return Optional.fromNullable(aUser);
+				LOG.debug("n\tAuthenticated");
+				return Optional.of(aUser);
 			}
+			LOG.debug("\n\tUser Not Found {}", userId);
 		}
+		
+		LOG.debug("\n\tToken Not Found {}", credentials);
 		return Optional.absent();
 	}
 
