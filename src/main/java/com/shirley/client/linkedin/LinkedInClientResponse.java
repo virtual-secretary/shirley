@@ -17,11 +17,11 @@ public class LinkedInClientResponse {
 	private int resultCount;
 	
 	@JsonProperty
-	private List<UserInfo> results;
+	private List<Person> results;
 
-	public LinkedInClientRespone(){}
+	public LinkedInClientResponse(){}
 	
-	public LinkedInClientRespone(int resultCount, List<UserInfo> results) {
+	public LinkedInClientResponse(int resultCount, List<Person> results) {
 		super();
 		this.resultCount = resultCount;
 		this.results = results;
@@ -35,11 +35,11 @@ public class LinkedInClientResponse {
 		this.resultCount = resultCount;
 	}
 
-	public List<UserInfo> getResults() {
+	public List<Person> getResults() {
 		return results;
 	}
 
-	public void setResults(List<UserInfo> results) {
+	public void setResults(List<Person> results) {
 		this.results = results;
 	}
 	
