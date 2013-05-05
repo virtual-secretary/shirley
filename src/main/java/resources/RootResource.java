@@ -6,9 +6,13 @@ import java.net.URI;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -65,10 +69,21 @@ public class RootResource
 		return Response.seeOther(callback).header("SET-COOKIE", cookie).build();
 	}
 	
+	@GET
 	@Path("logout")
-	public void logout() throws Exception
+	public Response getLogout(@CookieParam("VA_SHIRLEY") Cookie tokenCookie) throws Exception
 	{
-		//TODO::
+		return postLogout(tokenCookie);
+	}
+	
+	@POST
+	@Path("logout")
+	public Response postLogout(@CookieParam("VA_SHIRLEY") Cookie tokenCookie) throws Exception
+	{
+		// Generate cookie destroyer
+		String cookie = generator.destroyCookie();
+		
+		return Response.ok().header("SET-COOKIE", cookie).build();
 	}
 	
 }

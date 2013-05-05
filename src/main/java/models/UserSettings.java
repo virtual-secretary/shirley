@@ -1,46 +1,81 @@
 package models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+@JsonInclude(Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class UserSettings
 {
-	private boolean notify;
-	private boolean linkedin;
-	private boolean google;
+	@JsonProperty private boolean notify;
+	@JsonProperty private boolean linkedin;
+	@JsonProperty private boolean google;
+	@JsonProperty private boolean twiiter;
+	@JsonProperty private boolean yammer;
 	
 	public UserSettings(){}
-	
-	public UserSettings(boolean notify, boolean linkedin, boolean google)
+
+	public UserSettings(boolean notify, boolean linkedin, boolean google,
+			boolean twiiter, boolean yammer)
 	{
 		super();
 		this.notify = notify;
 		this.linkedin = linkedin;
 		this.google = google;
+		this.twiiter = twiiter;
+		this.yammer = yammer;
 	}
-
 
 	public boolean isNotify()
 	{
 		return notify;
 	}
+
 	public void setNotify(boolean notify)
 	{
 		this.notify = notify;
 	}
+
 	public boolean isLinkedin()
 	{
 		return linkedin;
 	}
+
 	public void setLinkedin(boolean linkedin)
 	{
 		this.linkedin = linkedin;
 	}
+
 	public boolean isGoogle()
 	{
 		return google;
 	}
+
 	public void setGoogle(boolean google)
 	{
 		this.google = google;
+	}
+
+	public boolean isTwiiter()
+	{
+		return twiiter;
+	}
+
+	public void setTwiiter(boolean twiiter)
+	{
+		this.twiiter = twiiter;
+	}
+
+	public boolean isYammer()
+	{
+		return yammer;
+	}
+
+	public void setYammer(boolean yammer)
+	{
+		this.yammer = yammer;
 	}
 
 	@Override
@@ -51,6 +86,8 @@ public class UserSettings
 		result = prime * result + (google ? 1231 : 1237);
 		result = prime * result + (linkedin ? 1231 : 1237);
 		result = prime * result + (notify ? 1231 : 1237);
+		result = prime * result + (twiiter ? 1231 : 1237);
+		result = prime * result + (yammer ? 1231 : 1237);
 		return result;
 	}
 
@@ -70,9 +107,11 @@ public class UserSettings
 			return false;
 		if (notify != other.notify)
 			return false;
+		if (twiiter != other.twiiter)
+			return false;
+		if (yammer != other.yammer)
+			return false;
 		return true;
 	}
-	
-	
 	
 }

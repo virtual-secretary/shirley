@@ -19,6 +19,21 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
   
+  <repositories>
+      <repository>
+         <id>twitter4j.org</id>
+         <name>twitter4j.org Repository</name>
+         <url>http://twitter4j.org/maven2</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>true</enabled>
+         </snapshots>
+      </repository>
+   </repositories>
+
+   
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -53,6 +68,12 @@
   <!-- Common management                -->
   <!-- ================================ -->
   <dependencies>
+      <!-- Twitter -->
+      <dependency>
+         <groupId>org.twitter4j</groupId>
+         <artifactId>twitter4j-core</artifactId>
+         <version>[3.0,)</version>
+      </dependency>
 	  <!-- Dropwizard -->
 	  <dependency>
         <groupId>${dropwizard.groupId}</groupId>

@@ -77,5 +77,20 @@ public class LoginCookieGeneratorIpml
 			return cookie.toString() + ";HttpOnly";
 		}
 	}
+	
+	public String destroyCookie()
+	{
+		final String serverName = serverURI.getHost();
+		
+		String domain = serverName.equals("localhost") ? "" : serverName;
+		
+		// Save the token
+		
+		final boolean isHttps = "https".equals(serverURI.getScheme()) ? true : false;		// if server is https cookie is only available for https
+		
+		NewCookie cookie = new NewCookie("VA_SHIRLEY", null, "/", domain, null, 0, isHttps);
+		LOG.debug("cookie.toString() : {}", cookie.toString());
+		return cookie.toString() + ";HttpOnly";
+	}
 
 }

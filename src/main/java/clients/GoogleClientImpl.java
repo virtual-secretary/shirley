@@ -1,6 +1,7 @@
 package clients;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,58 +15,55 @@ import models.GoogleUserInfoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.CalendarList;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.representation.Form;
 
-public class ImplGoogleClient implements GoogleClient
+public class GoogleClientImpl implements GoogleClient
 {
-	private final static Logger LOG = LoggerFactory.getLogger(ImplGoogleClient.class);
+	private final static Logger LOG = LoggerFactory.getLogger(GoogleClientImpl.class);
 	
 	private final static String CLIENT_ID = "817343750420-5bq1gtg8ttba0io5dcp86iv9leu4lq09.apps.googleusercontent.com";
 	private final static String CLIENT_SECRET = "gw1jYjyAi_CnQ9Ivxi9wKrtL";
 	private final String APIKEY = "AIzaSyAWjk-ee7cHY64_CzpfwX0VtvHLfCC93j8";
 	private final Client client;
-
-	public ImplGoogleClient()
+	private String accessToken;
+	
+	public GoogleClientImpl()
 	{
 		this.client = new Client();
 	}
 
 	@Override
-	public CalendarList listCalendars()
+	public CalendarList getCalendars()
 	{
 		// GET https://www.googleapis.com/calendar/v3/users/me/calendarList
 
 		WebResource resource = client.resource(
 				"https://www.googleapis.com/calendar/v3/users/me/calendarList")
-				.queryParam("key", APIKEY);
-		// CalendarService service new CalendarService();
-		// resource.
-		// String resp = resource.get(String.class);
-		// CalendarList calList;
-		// try {
-		// calList = fromJson(resp, CalendarList.class);
-		// return calList;
-		//
-		// } catch (IOException e) {
-		// return null;
-		// }
+				.queryParam("access_token", this.accessToken);
+		
 		CalendarList calList = resource.get(CalendarList.class);
 		return calList;
 
 	}
 
 	@Override
-	public GoogleEvents listCalEvents(String calID)
+	public GoogleEvents getEvents(String calID, int page, Date date)
 	{
 		// get
 		// https://www.googleapis.com/calendar/v3/calendars/calendarId/events
 		WebResource resource = client.resource(
 				"https://www.googleapis.com/calendar/v3/calendars/" + calID
-						+ "/events").queryParam("key", APIKEY);
+						+ "/events")
+						.queryParam("access_token", this.accessToken)
+						.queryParam("maxResults", "10")
+						.queryParam("pagetoken", String.format("%d", page))
+						.queryParam("timeMin", new DateTime(date).toStringRfc3339());
+		
 		GoogleEvents resp = resource.get(GoogleEvents.class);
 		return resp;
 	}
@@ -77,13 +75,13 @@ public class ImplGoogleClient implements GoogleClient
 		// https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
 		WebResource resource = client.resource(
 				"https://www.googleapis.com/calendar/v3/calendars/" + calID
-						+ "/events/" + event.getId()).queryParam("key", APIKEY);
+						+ "/events/" + event.getId()).queryParam("access_token", this.accessToken);
 		
 		return resource.put(GoogleEvent.class, event);
 	}
 
 	@Override
-	public GoogleEvent getCalEvent(String calID, String eventID)
+	public GoogleEvent getEvent(String calID, String eventID)
 	{
 		// GET
 		// https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
@@ -145,6 +143,7 @@ public class ImplGoogleClient implements GoogleClient
 								.accept(MediaType.APPLICATION_JSON_TYPE)
 								.entity(entity)
 								.post(GoogleAccessToken.class);
+			this.accessToken = response.getAccessToken();
 		} 
 		catch ( UniformInterfaceException e )
 		{
@@ -153,6 +152,13 @@ public class ImplGoogleClient implements GoogleClient
 		}
 		
 		return response;
+	}
+
+	@Override
+	public void setAccessToken(String token)
+	{
+		this.accessToken = token;
+		
 	}
 
 }
