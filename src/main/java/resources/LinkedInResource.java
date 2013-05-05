@@ -38,12 +38,24 @@ public class LinkedInResource
 	{
 		return UriBuilder.fromUri(
 							serverURI.getScheme() + "://" + serverURI.getHost()
-							).path(
-							UriBuilder.fromResource(GoogleOAuthResource.class).build().toString()
+							).path("api").path( 
+							UriBuilder.fromResource(LinkedInResource.class).build().toString()
 						  )
 						 .build();
 	}
 	
+	public LinkedInResource(URI serverURI, UserDAO userDAO,
+			LinkedInRequestTokenDAO reqDAO, LinkedInAccessTokenDAO accDAO)
+	{
+		super();
+		this.serverURI = serverURI;
+		this.userDAO = userDAO;
+		this.reqDAO = reqDAO;
+		this.accDAO = accDAO;
+	}
+
+
+
 	@GET
 	@Path("auth")
 	public Response auth(@UAuth User user, 
@@ -52,7 +64,7 @@ public class LinkedInResource
 		String userId = user.getId();
 
 		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI())
-				.path("method").build();
+				.path(method).build();
 		final LinkedInOAuthService oauthService = LinkedInOAuthServiceFactory
 				.getInstance().createLinkedInOAuthService(API_KEY, SECRET_KEY);
 		
@@ -64,7 +76,9 @@ public class LinkedInResource
 			reqDAO.save(userId, reqToken);
 		}
 		
-		return Response.seeOther(redirectURL).build();
+		URI authURL = UriBuilder.fromUri(reqToken.getAuthorizationUrl()).queryParam("scope", "r_fullprofile r_network r_emailaddress").build();
+		
+		return Response.seeOther(authURL).build();
 	}
 	
 	@GET

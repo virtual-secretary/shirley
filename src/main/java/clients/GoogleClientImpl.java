@@ -36,6 +36,12 @@ public class GoogleClientImpl implements GoogleClient
 	{
 		this.client = new Client();
 	}
+	
+	public GoogleClientImpl(Client client)
+	{
+		super();
+		this.client = client;
+	}
 
 	@Override
 	public CalendarList getCalendars()
@@ -133,7 +139,7 @@ public class GoogleClientImpl implements GoogleClient
 		entity.add("code", code);
 		entity.add("client_id", clientId);
 		entity.add("client_secret", clientSecret);
-		entity.add("redirect_uri", redirectUri);
+		entity.add("redirect_uri", redirectUri.toString());
 		entity.add("grant_type", "authorization_code");
 		
 		try

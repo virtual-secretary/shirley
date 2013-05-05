@@ -25,6 +25,7 @@ import security.LoginCookieGeneratorIpml;
 import security.User;
 
 import com.mongodb.DB;
+import com.yammer.dropwizard.jersey.params.BooleanParam;
 
 @Path("/")
 public class RootResource
@@ -40,13 +41,14 @@ public class RootResource
 		this.generator = generator;
 	}
 
+	@POST
 	@Path("login")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response login(
 			@Context HttpServletRequest req,
 			@FormParam("username") String username,
 			@FormParam("password") String password,
-			@FormParam("remember") boolean remember,
+			@FormParam("remember") BooleanParam remember,
 			@FormParam("callback") URI callback) throws Exception
 	{
 		JacksonDBCollection<User, String> coll = JacksonDBCollection.wrap(db.getCollection("users"), User.class, String.class);
@@ -63,10 +65,14 @@ public class RootResource
 		ResourceHelper.AuthenticaErrorIfNotTrue(checkpw);
 		
 		// generate LoginCookie
-		String cookie = generator.generateResponse(user, remember, req.getRemoteAddr());
+		String cookie = generator.generateResponse(user, remember == null ? false : remember.get(), req.getRemoteAddr());
 		
 		// return it
-		return Response.seeOther(callback).header("SET-COOKIE", cookie).build();
+		
+		if ( callback != null )
+			return Response.seeOther(callback).header("SET-COOKIE", cookie).build();
+		else
+			return Response.ok().header("SET-COOKIE", cookie).build();
 	}
 	
 	@GET
@@ -81,7 +87,7 @@ public class RootResource
 	public Response postLogout(@CookieParam("VA_SHIRLEY") Cookie tokenCookie) throws Exception
 	{
 		// Generate cookie destroyer
-		String cookie = generator.destroyCookie();
+		String cookie = generator.destroyCookie(tokenCookie.getValue());
 		
 		return Response.ok().header("SET-COOKIE", cookie).build();
 	}

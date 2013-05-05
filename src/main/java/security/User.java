@@ -6,6 +6,7 @@ import java.util.List;
 import models.UserSettings;
 
 import org.mongojack.Id;
+import org.mongojack.ObjectId;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class User
 {
 	@Id
-	@JsonProperty
+	@ObjectId
 	private String id;
 	
 	@JsonProperty

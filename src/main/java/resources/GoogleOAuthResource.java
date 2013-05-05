@@ -35,7 +35,7 @@ public class GoogleOAuthResource
 	{
 		return UriBuilder.fromUri(
 							serverURI.getScheme() + "://" + serverURI.getHost()
-							).path(
+							).path("api").path(
 							UriBuilder.fromResource(GoogleOAuthResource.class).build().toString()
 						  )
 						 .build();
@@ -56,10 +56,10 @@ public class GoogleOAuthResource
 	public Response auth(@UAuth User user, 
 						@QueryParam("method") String method) throws Exception
 	{
-		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI()).path("method").build();
+		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI()).path(method).build();
 		URI authURL = UriBuilder.fromUri("https://accounts.google.com/o/oauth2/auth?response_type=code")
 								.queryParam("client_id", CLIENT_ID)
-								.queryParam("scope", "https://www.googleapis.com/auth/calendar+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile")
+								.queryParam("scope", "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile")
 								.queryParam("redirect_uri", redirectURL.toString())
 								.build();
 								  
