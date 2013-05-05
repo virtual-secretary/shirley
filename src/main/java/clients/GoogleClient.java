@@ -1,6 +1,7 @@
 package clients;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.Set;
 
 import models.GoogleAccessToken;
@@ -11,16 +12,18 @@ import com.google.api.services.calendar.model.CalendarList;
 
 public interface GoogleClient
 {
+	void setAccessToken(String token);
+	
 	Set<String> getEmails(String token);
 	
 	GoogleAccessToken getAccessToken(final String code, final URI redirectUri);
 	
-	CalendarList listCalendars();
+	CalendarList getCalendars();
 
-	GoogleEvents listCalEvents(String calID);
+	GoogleEvents getEvents(String calID, int page, Date date);
 
 	GoogleEvent updateCalEvent(String calID, GoogleEvent event);
 
-	GoogleEvent getCalEvent(String calID, String eventID);
+	GoogleEvent getEvent(String calID, String eventID);
 
 }

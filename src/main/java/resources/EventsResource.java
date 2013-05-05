@@ -11,7 +11,15 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
+import security.UAuth;
+import security.User;
+
+import clients.GoogleClient;
+
+import com.google.api.services.calendar.model.CalendarList;
+import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
+import com.yammer.dropwizard.jersey.params.IntParam;
 
 import daos.EventsDAO;
 
@@ -20,7 +28,8 @@ public class EventsResource
 {
 	private final static long tenDays = 864000000;
 	private final EventsDAO eventsDAO;
-
+	private GoogleClient googleClient;
+	
 	public EventsResource(EventsDAO eventsDAO)
 	{
 		super();
@@ -28,24 +37,19 @@ public class EventsResource
 	}
 
 	@GET
-	public List<Event> getEvents(@QueryParam("from") String from,
-			@QueryParam("to") String to) throws Exception
+	public List<Event> getEvents(
+			@UAuth User user,
+			@QueryParam("from") String from,
+			@QueryParam("page") IntParam page) throws Exception
 	{
 		Date fromDate = getDateFromString(from);
-		Date endDate = getDateFromString(to);
+		CalendarList listCalendars = googleClient.getCalendars();
+		List<CalendarListEntry> items = listCalendars.getItems();
+		items.get(0).getId();
+		
 		List<Event> events = new ArrayList<Event>();
 		
-		if (fromDate.before(endDate))
-		{
-			// clamps to the date range to <10
-			if (fromDate.getTime() - endDate.getTime() < tenDays)
-			{
-				endDate = new Date(fromDate.getTime() + tenDays);
-			}
-			events.addAll(eventsDAO.getEventsForDateRange(fromDate, endDate)
-					.get());
-			return events;
-		}
+		
 		return getEvents(from);
 	}
 

@@ -2,6 +2,7 @@ package resources;
 
 import java.net.URI;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -43,13 +44,18 @@ public class LinkedInResource
 						 .build();
 	}
 	
+	@GET
 	@Path("auth")
-	public Response auth(@UAuth User user) throws Exception
+	public Response auth(@UAuth User user, 
+			@QueryParam("method") String method) throws Exception
 	{
-		final LinkedInOAuthService oauthService = LinkedInOAuthServiceFactory.getInstance().createLinkedInOAuthService(API_KEY, SECRET_KEY);
-		
 		String userId = user.getId();
-		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI()).path("connect").build();
+
+		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI())
+				.path("method").build();
+		final LinkedInOAuthService oauthService = LinkedInOAuthServiceFactory
+				.getInstance().createLinkedInOAuthService(API_KEY, SECRET_KEY);
+		
 		LinkedInRequestToken reqToken = reqDAO.getRequestTokenByDeveloper(userId);
 		
 		if ( reqToken == null )
@@ -61,6 +67,7 @@ public class LinkedInResource
 		return Response.seeOther(redirectURL).build();
 	}
 	
+	@GET
 	@Path("connect")
 	public Response connect(
 			@UAuth User user,

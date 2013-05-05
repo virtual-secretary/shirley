@@ -2,6 +2,7 @@ package resources;
 
 import java.net.URI;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -36,11 +37,15 @@ public class TwitterResource
 						 .build();
 	}
 	
+	@GET
 	@Path("auth")
-	public Response auth(@UAuth User user) throws Exception
+	public Response auth(@UAuth User user, @QueryParam("method") String method)
+			throws Exception
 	{
 		String userId = user.getId();
-		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI()).path("connect").build();
+
+		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI())
+				.path("method").build();
 		RequestToken reqToken = reqDAO.findByUser(userId);
 		
 		if ( reqToken == null )
@@ -52,6 +57,7 @@ public class TwitterResource
 		return Response.seeOther(redirectURL).build();
 	}
 	
+	@GET
 	@Path("connect")
 	public Response connect(
 			@UAuth User user,

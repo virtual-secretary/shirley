@@ -23,6 +23,7 @@ import daos.UserDAO;
 @Path("oauth/google")
 public class GoogleOAuthResource
 {
+	private final static String CLIENT_ID = "817343750420-5bq1gtg8ttba0io5dcp86iv9leu4lq09.apps.googleusercontent.com";
 	private final static Logger LOG = LoggerFactory.getLogger(GoogleOAuthResource.class);
 	
 	private URI serverURI;
@@ -50,23 +51,21 @@ public class GoogleOAuthResource
 		this.userDAO = userDAO;
 	}
 
+	@GET
 	@Path("auth")
-	public Response auth(@UAuth User user) throws Exception
+	public Response auth(@UAuth User user, 
+						@QueryParam("method") String method) throws Exception
 	{
-//		String userId = user.getId();
-//		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI()).path("connect").build();
-//		RequestToken reqToken = reqDAO.findByUser(userId);
-//		
-//		if ( reqToken == null )
-//		{
-//			reqToken = twitter.getOAuthRequestToken(redirectURL.toString());
-//			reqDAO.save(userId, reqToken);
-//		}
-//		
-//		return Response.seeOther(redirectURL).build();
-		return null;
+		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI()).path("method").build();
+		URI authURL = UriBuilder.fromUri("https://accounts.google.com/o/oauth2/auth?response_type=code")
+								.queryParam("client_id", CLIENT_ID)
+								.queryParam("scope", "https://www.googleapis.com/auth/calendar+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile")
+								.queryParam("redirect_uri", redirectURL.toString())
+								.build();
+								  
+		return Response.seeOther(authURL).build();
 	}
-
+	
 	@GET
 	@Path("connect")
 	public Response connectWithGithub(
