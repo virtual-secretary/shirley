@@ -60,6 +60,7 @@ public class GoogleOAuthResource
 		URI authURL = UriBuilder.fromUri("https://accounts.google.com/o/oauth2/auth?response_type=code")
 								.queryParam("client_id", CLIENT_ID)
 								.queryParam("scope", "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile")
+								.queryParam("access_type","offline")
 								.queryParam("redirect_uri", redirectURL.toString())
 								.build();
 								  

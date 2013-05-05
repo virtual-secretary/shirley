@@ -65,7 +65,7 @@ public class TwitterResource
 			reqDAO.save(userId, reqToken);
 		}
 		
-		URI authURI = UriBuilder.fromUri(reqToken.getAuthenticationURL()).build();
+		URI authURI = UriBuilder.fromUri(reqToken.getAuthorizationURL()).build();
 		
 		return Response.seeOther(authURI).build();
 	}
@@ -84,7 +84,7 @@ public class TwitterResource
 			new WebApplicationException(Response.Status.UNAUTHORIZED);
 		}
 		
-		AccessToken oAuthAccessToken = twitter.getOAuthAccessToken();
+		AccessToken oAuthAccessToken = twitter.getOAuthAccessToken(reqToken, code);
 		
 		user.getSetting().setTwiiter(true);
 		userDAO.updateSetting(user);

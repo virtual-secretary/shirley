@@ -62,7 +62,7 @@ public class MongoLinkedInRequestTokenDAO implements LinkedInRequestTokenDAO
 	@Override
 	public boolean save(String userId, LinkedInRequestToken token)
 	{
-		if ( ObjectId.isValid(userId) )
+		if ( !ObjectId.isValid(userId) )
 		{
 			return false;
 		}
