@@ -21,15 +21,21 @@ import security.LoginCookieGeneratorIpml;
 import security.User;
 
 import com.mongodb.DB;
-import com.mongodb.Mongo;
 
 @Path("/")
 public class RootResource
 {
-	private Mongo m;
 	private DB db;
 	private LoginCookieGeneratorIpml generator;
 	
+	
+	public RootResource(DB db, LoginCookieGeneratorIpml generator)
+	{
+		super();
+		this.db = db;
+		this.generator = generator;
+	}
+
 	@Path("login")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response login(

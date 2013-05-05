@@ -1,3 +1,6 @@
+#Server Name
+serverName: "http://localhost"
+
 #Mongo DB Settings
 mongo:
   database: appfuel_rex
