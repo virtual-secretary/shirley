@@ -4,18 +4,24 @@ import java.net.URI;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
-import models.LinkedInAccessTokenDAO;
+import models.YammerAccessToken;
 
+import org.mongojack.JacksonDBCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import security.UAuth;
 import security.User;
-import daos.LinkedInRequestTokenDAO;
+import clients.YammerClient;
+
+import com.mongodb.DB;
+
 import daos.UserDAO;
 
 @Path("/oauth/yammer")
@@ -30,8 +36,9 @@ public class YammerResource
 	
 	private URI serverURI;
 	private UserDAO userDAO;
-	private LinkedInRequestTokenDAO reqDAO;
-	private LinkedInAccessTokenDAO accDAO;
+	private YammerClient yClient;
+	
+	private JacksonDBCollection<YammerAccessToken, String> coll;
 	
 	private URI getAbsoluteResourceURI()
 	{
@@ -43,13 +50,21 @@ public class YammerResource
 						 .build();
 	}
 	
+	public YammerResource(URI serverURI, YammerClient yClient, UserDAO userDAO, DB db)
+	{
+		super();
+		this.serverURI = serverURI;
+		this.yClient = yClient;
+		coll = JacksonDBCollection.wrap(db.getCollection("yammer.access_tokens"), YammerAccessToken.class, String.class);
+		this.userDAO = userDAO;
+	}
+
+
 	@GET
 	@Path("auth")
 	public Response auth(@UAuth User user, 
 			@QueryParam("method") String method) throws Exception
 	{
-		String userId = user.getId();
-
 		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI())
 									.path(method).build();
 		
@@ -66,10 +81,35 @@ public class YammerResource
 			@UAuth User user,
 			@QueryParam("code") String code) throws Exception
 	{
-//		UriBuilder.fromUri("https://www.yammer.com/oauth2")
-//					.
-//					.queryParam("", values)
+		YammerAccessToken accessToken = yClient.getAccessToken(code);
 		
-		return Response.ok().build();
+		if ( accessToken != null )
+		{
+			accessToken.setId(user.getId());
+			coll.insert(accessToken);
+			
+			user.getSetting().setYammer(true);
+			userDAO.updateSetting(user);
+			
+			LOG.debug("\n\t Got accessToken {}", accessToken);
+		}
+		return Response.ok(accessToken).type(MediaType.APPLICATION_JSON).build();
+	}
+	
+	@GET
+	@Path("profile")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Object getProfile(
+			@UAuth User user,
+			@QueryParam("q") String q) throws Exception
+	{
+		YammerAccessToken token = coll.findOneById(user.getId());
+		
+		if ( token == null || !user.getSetting().isYammer() )
+		{
+			// TODO : DO SOMETHING
+		}
+		
+		return yClient.getUserProfile(token.getToken(), q);
 	}
 }

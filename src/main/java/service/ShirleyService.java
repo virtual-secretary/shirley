@@ -7,6 +7,7 @@ import resources.GoogleOAuthResource;
 import resources.LinkedInResource;
 import resources.RootResource;
 import resources.TwitterResource;
+import resources.YammerResource;
 import security.LoginCookieGeneratorIpml;
 import security.UAuthAuthenticator;
 import security.User;
@@ -16,6 +17,7 @@ import twitter4j.TwitterFactory;
 import bundle.MongoExceptionsBundle;
 import clients.GoogleClient;
 import clients.GoogleClientImpl;
+import clients.YammerClient;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
@@ -74,6 +76,9 @@ public class ShirleyService extends Service<ShirleyConfiguration>
 		Twitter twitter = TwitterFactory.getSingleton();
 		twitter.setOAuthConsumer("0BRsjcxPE3snL06eqXW8A", "zdRP1SBSsH08jArP4UM39imiynRa9KdYuDGatw6c");
 		
+		// YammerClient
+		YammerClient yClient = new YammerClient(client);
+		
 		// LoginCookie Generator
 		LoginCookieGeneratorIpml generator = new LoginCookieGeneratorIpml(db, serverURI);
 		
@@ -96,6 +101,7 @@ public class ShirleyService extends Service<ShirleyConfiguration>
 		env.addResource(new TwitterResource(serverURI, twitter, userDAO, trtDAO, tatDAO));
 		env.addResource(new GoogleOAuthResource(serverURI, gClient, gatDAO, userDAO));
 		env.addResource(new EventsResource(gClient, gatDAO));
+		env.addResource(new YammerResource(serverURI, yClient, userDAO, db));
 	}
 
 }
