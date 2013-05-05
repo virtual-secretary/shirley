@@ -1,14 +1,4 @@
 package clients;
-
-
-import java.io.IOException;
-
-import models.EventsOptionsModel;
-
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.Calendar.CalendarList.List;
 import com.google.api.services.calendar.model.*;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -65,7 +55,7 @@ public class ImplGoogleClient implements GoogleClient{
 	public Event getCalEvent(String calID, String eventID) {
 		//GET 
 		//https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
-		WebResource resource = client.resource("https://www.googleapis.com/calendar/v3/calendars/" + calID "/events/" + eventID);
+		WebResource resource = client.resource("https://www.googleapis.com/calendar/v3/calendars/" + calID +"/events/" + eventID);
 	
 		Event resp = resource.get(Event.class);
 		return resp;		
