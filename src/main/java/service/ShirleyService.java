@@ -2,7 +2,6 @@ package service;
 
 import java.net.URI;
 
-import resources.HelloWorldResource;
 import resources.RootResource;
 import security.LoginCookieGeneratorIpml;
 import security.UAuthAuthenticator;
@@ -46,7 +45,7 @@ public class ShirleyService extends Service<ShirleyConfiguration>
 		// Adding Authenticator
 		env.addProvider(new UserAuthProvider<User>(new UAuthAuthenticator(m, db), serverURI.toString()));
 		// Adding Resources
-		env.addResource(new HelloWorldResource());
+		
 		env.addResource(new RootResource(db, generator));
 	}
 

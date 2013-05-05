@@ -3,6 +3,7 @@ package models;
 import java.lang.reflect.Field;
 
 import org.mongojack.Id;
+import org.mongojack.ObjectId;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,8 +16,8 @@ import com.google.common.base.Objects;
 public class GoogleAccessToken
 {
 	@Id
-	@JsonProperty
-	private String developer;
+	@ObjectId
+	private String id;
 	
 	@JsonProperty
 	private String accessToken;
@@ -32,25 +33,25 @@ public class GoogleAccessToken
 	
 	public GoogleAccessToken(){}
 	
-	public GoogleAccessToken(String developer, String accessToken,
-			String tokenType, long expiresIn, String idToken)
+	public GoogleAccessToken(String id, String accessToken, String tokenType,
+			long expiresIn, String idToken)
 	{
 		super();
-		this.developer = developer;
+		this.id = id;
 		this.accessToken = accessToken;
 		this.tokenType = tokenType;
 		this.expiresIn = expiresIn;
 		this.idToken = idToken;
 	}
 
-	public String getDeveloper()
+	public String getId()
 	{
-		return developer;
+		return id;
 	}
 
-	public void setDeveloper(String developer)
+	public void setId(String id)
 	{
-		this.developer = developer;
+		this.id = id;
 	}
 
 	public String getAccessToken()

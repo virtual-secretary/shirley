@@ -3,7 +3,7 @@ serverName: "http://localhost"
 
 #Mongo DB Settings
 mongo:
-  database: appfuel_rex
+  database: appfuel
   setUpIndex: true
   nodes:
     - host: localhost

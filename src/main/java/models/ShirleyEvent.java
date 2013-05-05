@@ -1,12 +1,13 @@
 package models;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 public class ShirleyEvent
 {
 	private String subject;
 	private String organizer;
 	private String atendee;
-	private DateTime start;
-	private DateTime end;
+	private Date start;
+	private Date end;
+	
 }

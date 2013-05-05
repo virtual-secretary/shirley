@@ -4,6 +4,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import models.LinkedInAccessTokenDAO;
 import models.UserSettings;
 import security.UAuth;
 import security.User;
@@ -12,7 +13,9 @@ import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
 import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
-import com.mongodb.DB;
+
+import daos.LinkedInRequestTokenDAO;
+import daos.UserDAO;
 
 @Path("oauth/linkedin")
 public class LinkedInResource
@@ -22,7 +25,9 @@ public class LinkedInResource
 	private final static String USER_TOKEN = "93bc2947-8b36-4ff0-b7a5-f02a24f0c0a0";
 	private final static String USER_SECRET = "f2b532f6-908e-4f1f-b89e-ee4a1d4db20c";
 	
-	private DB db;
+	private UserDAO userDAO;
+	private LinkedInRequestTokenDAO reqDAO;
+	private LinkedInAccessTokenDAO accDAO;
 	
 	@Path("connect")
 	public Response connect(
@@ -30,12 +35,22 @@ public class LinkedInResource
 			@QueryParam("code") String code) throws Exception
 	{
 		final LinkedInOAuthService oauthService = LinkedInOAuthServiceFactory.getInstance().createLinkedInOAuthService(API_KEY, SECRET_KEY);
-		LinkedInRequestToken requestToken = oauthService.getOAuthRequestToken();
-		LinkedInAccessToken oAuthAccessToken = oauthService.getOAuthAccessToken(requestToken, code);
-		UserSettings setting = user.getSetting();
-		setting.setLinkedin(true);
 		
-		// TODO:: Save the oAuthAccessToken
+		LinkedInRequestToken requestToken = reqDAO.getRequestTokenByDeveloper(user.getId());
+		
+		if ( requestToken == null )
+		{
+			// REQUEST TOKEN
+			requestToken = oauthService.getOAuthRequestToken();
+		}
+		
+		LinkedInAccessToken oAuthAccessToken = oauthService.getOAuthAccessToken(requestToken, code);
+		
+		UserSettings setting = user.getSetting();
+		
+		setting.setLinkedin(true);
+		userDAO.updateSetting(user);
+		accDAO.save(user.getId(), oAuthAccessToken);
 		
 		return Response.ok().build();
 	}

@@ -1,8 +1,5 @@
 package daos;
 
-import java.util.Date;
-import java.util.List;
-
 import com.google.api.services.calendar.model.Event;
 import com.google.common.base.Optional;
 
