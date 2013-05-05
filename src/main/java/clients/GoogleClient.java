@@ -1,23 +1,18 @@
 package clients;
 
-import java.net.URI;
+import com.google.api.services.calendar.model.CalendarList;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 
-import models.EventsOptionsModel;
+public interface GoogleClient
+{
 
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.Calendar.CalendarList.List;
-import com.google.api.services.calendar.model.*;
+	CalendarList listCalendars();
 
-public interface GoogleClient {
+	Events listCalEvents(String calID);
 
-CalendarList listCalendars();
+	Event updateCalEvent(String calID, Event event);
 
-Events listCalEvents(String calID);
-Event updateCalEvent(String calID,Event event);
-Event getCalEvent(String calID,String eventID);
-
-
+	Event getCalEvent(String calID, String eventID);
 
 }
