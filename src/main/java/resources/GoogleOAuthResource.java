@@ -75,7 +75,7 @@ public class GoogleOAuthResource
 	{
 		final URI redirectURI = UriBuilder.fromUri(getAbsoluteResourceURI()).path("connect").build();
 		GoogleAccessToken accessToken = client.getAccessToken(code, redirectURI);
-		
+		accessToken.setId(user.getId());
 		tokenDAO.save(accessToken);
 		UserSettings setting = user.getSetting();
 		setting.setGoogle(true);

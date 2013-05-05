@@ -2,6 +2,7 @@ package service;
 
 import java.net.URI;
 
+import resources.EventsResource;
 import resources.GoogleOAuthResource;
 import resources.LinkedInResource;
 import resources.RootResource;
@@ -94,6 +95,7 @@ public class ShirleyService extends Service<ShirleyConfiguration>
 		env.addResource(new LinkedInResource(serverURI, userDAO, lrtDAO, ltaDAO));
 		env.addResource(new TwitterResource(serverURI, twitter, userDAO, trtDAO, tatDAO));
 		env.addResource(new GoogleOAuthResource(serverURI, gClient, gatDAO, userDAO));
+		env.addResource(new EventsResource(gClient, gatDAO));
 	}
 
 }

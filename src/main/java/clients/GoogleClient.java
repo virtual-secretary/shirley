@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Set;
 
 import models.GoogleAccessToken;
+import models.GoogleCalendarList;
 import models.GoogleEvent;
 import models.GoogleEvents;
 
@@ -18,7 +19,7 @@ public interface GoogleClient
 	
 	GoogleAccessToken getAccessToken(final String code, final URI redirectUri);
 	
-	CalendarList getCalendars();
+	GoogleCalendarList getCalendars();
 
 	GoogleEvents getEvents(String calID, int page, Date date);
 

@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.ws.rs.core.MediaType;
 
 import models.GoogleAccessToken;
+import models.GoogleCalendarList;
 import models.GoogleEvent;
 import models.GoogleEvents;
 import models.GoogleUserInfoResponse;
@@ -15,8 +16,6 @@ import models.GoogleUserInfoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.model.CalendarList;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -44,7 +43,7 @@ public class GoogleClientImpl implements GoogleClient
 	}
 
 	@Override
-	public CalendarList getCalendars()
+	public GoogleCalendarList getCalendars()
 	{
 		// GET https://www.googleapis.com/calendar/v3/users/me/calendarList
 
@@ -52,7 +51,7 @@ public class GoogleClientImpl implements GoogleClient
 				"https://www.googleapis.com/calendar/v3/users/me/calendarList")
 				.queryParam("access_token", this.accessToken);
 		
-		CalendarList calList = resource.get(CalendarList.class);
+		GoogleCalendarList calList = resource.get(GoogleCalendarList.class);
 		return calList;
 
 	}
@@ -65,10 +64,8 @@ public class GoogleClientImpl implements GoogleClient
 		WebResource resource = client.resource(
 				"https://www.googleapis.com/calendar/v3/calendars/" + calID
 						+ "/events")
-						.queryParam("access_token", this.accessToken)
-						.queryParam("maxResults", "10")
-						.queryParam("pagetoken", String.format("%d", page))
-						.queryParam("timeMin", new DateTime(date).toStringRfc3339());
+						.queryParam("access_token", this.accessToken);
+//						.queryParam("timeMin", new DateTime(date).toStringRfc3339());
 		
 		GoogleEvents resp = resource.get(GoogleEvents.class);
 		return resp;
