@@ -68,6 +68,17 @@ public class Person {
 	@JsonProperty
 	private SiteStandardProfileRequest siteStandardProfileRequest;
 	
+	@JsonProperty
+	private int id;
+	
+	public int getId() {
+		return id;
+	}
+	
+	public int setId() {
+		return id;
+	}
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -222,7 +233,7 @@ public class Person {
 		this.siteStandardProfileRequest = siteStandardProfileRequest;
 	}
 
-	public Person(String firstName, String lastName, int _key,
+	public Person(int id,String firstName, String lastName, int _key,
 			Location location, String headline, String industry, int distance,
 			RelationshipToViewer relationshipToView, int numRecommeders,
 			String currentStatus, String currentStatusTimestamp,
@@ -232,6 +243,7 @@ public class Person {
 			ApiStandardProfileRequest apiStandardProfileRequest,
 			SiteStandardProfileRequest siteStandardProfileRequest) {
 		super();
+		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this._key = _key;
