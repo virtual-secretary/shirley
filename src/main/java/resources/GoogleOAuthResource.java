@@ -2,11 +2,9 @@ package resources;
 
 import java.net.URI;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
@@ -35,9 +33,9 @@ public class GoogleOAuthResource
 	private URI getAbsoluteResourceURI()
 	{
 		return UriBuilder.fromUri(
-							serverURI.getScheme() + "://" + serverURI.getHost() + 
-//							(serverURI.getPort() == 80 ? "" : serverURI.getPort()) +
-							"/api" + UriBuilder.fromResource(GoogleOAuthResource.class).build().toString()
+							serverURI.getScheme() + "://" + serverURI.getHost()
+							).path(
+							UriBuilder.fromResource(GoogleOAuthResource.class).build().toString()
 						  )
 						 .build();
 	}
@@ -52,28 +50,23 @@ public class GoogleOAuthResource
 		this.userDAO = userDAO;
 	}
 
-
-
-
-
-	@GET
-	@Path("login")
-	public Response loginWithGoogle(
-			@Context HttpServletRequest req,
-			@QueryParam("code") String code)
+	@Path("auth")
+	public Response auth(@UAuth User user) throws Exception
 	{
+//		String userId = user.getId();
+//		URI redirectURL = UriBuilder.fromUri(getAbsoluteResourceURI()).path("connect").build();
+//		RequestToken reqToken = reqDAO.findByUser(userId);
+//		
+//		if ( reqToken == null )
+//		{
+//			reqToken = twitter.getOAuthRequestToken(redirectURL.toString());
+//			reqDAO.save(userId, reqToken);
+//		}
+//		
+//		return Response.seeOther(redirectURL).build();
 		return null;
 	}
-	
-	@GET
-	@Path("register")
-	public Response registerWithGoogle(
-			@Context HttpServletRequest req,
-			@QueryParam("code") String code) throws Exception
-	{
-		return this.loginWithGoogle(req, code); 
-	}
-	
+
 	@GET
 	@Path("connect")
 	public Response connectWithGithub(
