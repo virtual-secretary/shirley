@@ -63,8 +63,13 @@ public class ImplGoogleClient implements GoogleClient{
 
 	@Override
 	public Event getCalEvent(String calID, String eventID) {
-		//GET https://www.googleapis.com/calendar/v3/calendars/calendarId
-		return null;
+		//GET 
+		//https://www.googleapis.com/calendar/v3/calendars/calendarId/events/eventId
+		WebResource resource = client.resource("https://www.googleapis.com/calendar/v3/calendars/" + calID "/events/" + eventID);
+	
+		Event resp = resource.get(Event.class);
+		return resp;		
+
 	}
 
 }
