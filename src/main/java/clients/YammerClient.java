@@ -36,7 +36,7 @@ public class YammerClient
 		
 		return resource.path("api/v1/users/by_email.json")
 						.queryParam("access_token", token)
-						.queryParam("email", "user@domain.com")
+						.queryParam("email", email)
 						.get(String.class); 
 	}
 	
