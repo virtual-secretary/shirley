@@ -39,4 +39,5 @@ public class LinkedInResource
 		
 		return Response.ok().build();
 	}
+
 }

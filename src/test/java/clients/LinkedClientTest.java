@@ -3,15 +3,18 @@ package clients;
 import static com.yammer.dropwizard.testing.JsonHelpers.asJson;
 
 import java.util.Date;
+import java.util.EnumMap;
+import java.util.Map;
 
 import org.junit.Test;
 
 import com.google.code.linkedinapi.client.LinkedInApiClient;
 import com.google.code.linkedinapi.client.LinkedInApiClientFactory;
+import com.google.code.linkedinapi.client.enumeration.SearchParameter;
 import com.google.code.linkedinapi.client.oauth.LinkedInAccessToken;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthService;
 import com.google.code.linkedinapi.client.oauth.LinkedInOAuthServiceFactory;
-import com.google.code.linkedinapi.client.oauth.LinkedInRequestToken;
+import com.google.code.linkedinapi.schema.People;
 import com.google.code.linkedinapi.schema.Person;
 
 public class LinkedClientTest
@@ -36,6 +39,13 @@ public class LinkedClientTest
 		LinkedInApiClient client = factory.createLinkedInApiClient(oAuthAccessToken);
 		Person person = client.getProfileForCurrentUser();
 		System.out.println(asJson(person));
+		
+		Map<SearchParameter, String> searchParameters = new EnumMap<SearchParameter, String>(SearchParameter.class);
+		searchParameters.put(SearchParameter.FIRST_NAME, "Aflred");
+		searchParameters.put(SearchParameter.COMPANY_NAME, "Appfuel");
+		People searchPeople = client.searchPeople(searchParameters);
+		
+		System.out.println(asJson(searchPeople));
 		
 	}
 }
